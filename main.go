@@ -28,8 +28,8 @@ var (
 )
 
 type probeMonitor struct {
-	IsValid     prometheus.Gauge
-	Expires     prometheus.Gauge
+	IsValid     prometheus.Gauge `json:"-"`
+	Expires     prometheus.Gauge `json:"-"`
 	Status      probeResult
 	Certificate *x509.Certificate
 }
@@ -66,7 +66,8 @@ func main() {
 
 	r := mux.NewRouter()
 	r.Handle("/metrics", prometheus.Handler())
-	r.HandleFunc("/", httpHandler)
+	r.HandleFunc("/", htmlHandler)
+	r.HandleFunc("/results.json", jsonHandler)
 	http.ListenAndServe(":3000", r)
 }
 

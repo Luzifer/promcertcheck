@@ -23,3 +23,9 @@ Usage of ./certcheck:
 PromCertcheck dev...
 Starting to listen on 0.0.0.0:3000
 ```
+
+## URLs
+
+- `/` - Shows you a human readable version of the check data
+- `/metrics` - Prometheus compatible output of the check data
+- `/results.json` - Gives you a JSON version of the check results including certificate details

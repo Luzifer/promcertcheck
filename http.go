@@ -3,13 +3,14 @@ package main
 //go:generate go-bindata display.html
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/flosch/pongo2"
 )
 
-func httpHandler(res http.ResponseWriter, r *http.Request) {
+func htmlHandler(res http.ResponseWriter, r *http.Request) {
 	tplsrc, _ := Asset("display.html")
 
 	template, err := pongo2.FromString(string(tplsrc))
@@ -23,4 +24,9 @@ func httpHandler(res http.ResponseWriter, r *http.Request) {
 		"certificateExpiresSoon": certificateExpiresSoon,
 		"version":                version,
 	}, res)
+}
+
+func jsonHandler(res http.ResponseWriter, r *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(res).Encode(probeMonitors)
 }
