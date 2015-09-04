@@ -1,0 +1,73 @@
+{
+	"ImportPath": "github.com/Luzifer/promcertcheck",
+	"GoVersion": "go1.5",
+	"Deps": [
+		{
+			"ImportPath": "bitbucket.org/ww/goautoneg",
+			"Comment": "null-5",
+			"Rev": "75cd24fc2f2c2a2088577d12123ddee5f54e0675"
+		},
+		{
+			"ImportPath": "github.com/Luzifer/rconfig",
+			"Rev": "0c78105a26af5663b6bb2c5be1fed4ed7d81d687"
+		},
+		{
+			"ImportPath": "github.com/beorn7/perks/quantile",
+			"Rev": "b965b613227fddccbfffe13eae360ed3fa822f8d"
+		},
+		{
+			"ImportPath": "github.com/flosch/pongo2",
+			"Comment": "v1.0-rc1-174-gf5d79aa",
+			"Rev": "f5d79aa0a914c08eb7f51a96cd7b2dbbe46fca46"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "aece6fb931241ad332956db4f62798dfbea944b3"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "8096f47503459bcc74d1f4c487b7e6e42e5746b5"
+		},
+		{
+			"ImportPath": "github.com/matttproud/golang_protobuf_extensions/pbutil",
+			"Rev": "fc2b8d3a73c4867e51861bbdd5ae3c1f0869dd6a"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_golang/model",
+			"Comment": "0.6.0-17-g3b16b46",
+			"Rev": "3b16b46a713f181888e5e9a1205ccc34d6917fb9"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_golang/prometheus",
+			"Comment": "0.6.0-17-g3b16b46",
+			"Rev": "3b16b46a713f181888e5e9a1205ccc34d6917fb9"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_golang/text",
+			"Comment": "0.6.0-17-g3b16b46",
+			"Rev": "3b16b46a713f181888e5e9a1205ccc34d6917fb9"
+		},
+		{
+			"ImportPath": "github.com/prometheus/client_model/go",
+			"Comment": "model-0.0.2-12-gfa8ad6f",
+			"Rev": "fa8ad6fec33561be4280a8f0514318c79d7f6cb6"
+		},
+		{
+			"ImportPath": "github.com/prometheus/procfs",
+			"Rev": "c91d8eefde16bd047416409eb56353ea84a186e4"
+		},
+		{
+			"ImportPath": "github.com/robfig/cron",
+			"Comment": "v1-2-g67823cd",
+			"Rev": "67823cd24dece1b04cced3a0a0b3ca2bc84d875e"
+		},
+		{
+			"ImportPath": "github.com/spf13/pflag",
+			"Rev": "8e7dc108ab3a1ab6ce6d922bbaff5657b88e8e49"
+		}
+	]
+}

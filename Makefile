@@ -1,3 +1,5 @@
+VERSION = $(shell git describe --tags)
+
 test:
 	go generate
 	go run *.go \
@@ -9,3 +11,9 @@ test:
 		--probe="https://pwd.luzifer.io/" \
 		--probe="https://www.itpad.de/" \
 		--probe="https://mondash.org/"
+
+container: build
+	docker build -t luzifer/promcertcheck .
+
+build:
+	docker run -v $(CURDIR):/src -e LDFLAGS='-X main.version $(VERSION)' centurylink/golang-builder:latest
