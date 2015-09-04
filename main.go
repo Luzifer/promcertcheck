@@ -58,6 +58,8 @@ func main() {
 	registerProbes()
 	refreshCertificateStatus()
 
+	fmt.Printf("PromCertcheck %s...\nStarting to listen on 0.0.0.0:3000\n", version)
+
 	c := cron.New()
 	c.AddFunc("0 0 * * * *", refreshCertificateStatus)
 	c.Start()

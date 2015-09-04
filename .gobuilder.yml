@@ -1,0 +1,3 @@
+general:
+    ldflags:
+      - "-X main.version $(git describe --tags)"
