@@ -12,8 +12,5 @@ test:
 		--probe="https://www.itpad.de/" \
 		--probe="https://mondash.org/"
 
-container: build
+container:
 	docker build -t luzifer/promcertcheck .
-
-build:
-	docker run -v $(CURDIR):/src -e LDFLAGS='-X main.version $(VERSION)' centurylink/golang-builder:latest
