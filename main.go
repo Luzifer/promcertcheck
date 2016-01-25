@@ -120,7 +120,10 @@ func refreshCertificateStatus() {
 			}
 		}
 
-		probeMonitors[probeURL.Host].Expires.Set(float64(verifyCert.NotAfter.UTC().Unix()))
+		if verifyCert != nil {
+			probeMonitors[probeURL.Host].Expires.Set(float64(verifyCert.NotAfter.UTC().Unix()))
+		}
+
 		switch verificationResult {
 		case certificateExpiresSoon, certificateOK:
 			probeMonitors[probeURL.Host].IsValid.Set(1)
