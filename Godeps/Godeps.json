@@ -1,6 +1,7 @@
 {
 	"ImportPath": "github.com/Luzifer/promcertcheck",
-	"GoVersion": "go1.5",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v74",
 	"Deps": [
 		{
 			"ImportPath": "bitbucket.org/ww/goautoneg",
