@@ -53,9 +53,12 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 	intermediatePool := x509.NewCertPool()
 	var verifyCert *x509.Certificate
 
+	hostPort := strings.Split(probeURL.Host, ":")
+	host := hostPort[0]
+
 	for _, cert := range resp.TLS.PeerCertificates {
-		wildHost := "*" + probeURL.Host[strings.Index(probeURL.Host, "."):]
-		if !inSlice(cert.DNSNames, probeURL.Host) && !inSlice(cert.DNSNames, wildHost) {
+		wildHost := "*" + host[strings.Index(host, "."):]
+		if !inSlice(cert.DNSNames, host) && !inSlice(cert.DNSNames, wildHost) {
 			intermediatePool.AddCert(cert)
 			continue
 		}
