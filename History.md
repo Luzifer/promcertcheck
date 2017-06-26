@@ -1,3 +1,7 @@
+# 0.4.1 / 2017-06-26
+
+  * Add automated building
+
 # 0.4.0 / 2017-06-26
 
   * Introduce /httpStatus endpoint  
