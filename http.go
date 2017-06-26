@@ -26,6 +26,17 @@ func htmlHandler(res http.ResponseWriter, r *http.Request) {
 	}, res)
 }
 
+func httpStatusHandler(res http.ResponseWriter, r *http.Request) {
+	httpStatus := http.StatusOK
+	for _, mon := range probeMonitors {
+		if mon.Status != certificateOK {
+			httpStatus = http.StatusInternalServerError
+		}
+	}
+
+	res.WriteHeader(httpStatus)
+}
+
 func jsonHandler(res http.ResponseWriter, r *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(res).Encode(probeMonitors)

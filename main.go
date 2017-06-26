@@ -61,6 +61,7 @@ func main() {
 	r := mux.NewRouter()
 	r.Handle("/metrics", prometheus.Handler())
 	r.HandleFunc("/", htmlHandler)
+	r.HandleFunc("/httpStatus", httpStatusHandler)
 	r.HandleFunc("/results.json", jsonHandler)
 	http.ListenAndServe(":3000", r)
 }
