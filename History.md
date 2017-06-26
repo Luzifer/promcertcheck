@@ -1,3 +1,9 @@
+# 0.4.0 / 2017-06-26
+
+  * Introduce /httpStatus endpoint  
+    which will respond with HTTP200 if everything is fine or HTTP500 if one or more certificates are broken
+  * Update rconfig, use duration parsing from rconfig
+
 # 0.3.0 / 2016-09-29
 
   * Add support for ports in probe-URLs
