@@ -81,7 +81,7 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 		return certificateInvalid, verifyCert
 	}
 
-	if verifyCert.NotAfter.Sub(time.Now()) < config.expireWarning {
+	if verifyCert.NotAfter.Sub(time.Now()) < config.ExpireWarning {
 		return certificateExpiresSoon, verifyCert
 	}
 

@@ -17,11 +17,9 @@ import (
 
 var (
 	config = struct {
-		Debug         bool     `flag:"debug" default:"false" description:"Output debugging data"`
-		ExpireWarning string   `flag:"expire-warning" default:"744h" description:"When to warn about a soon expiring certificate"`
-		Probes        []string `flag:"probe" default:"" description:"URLs to check for certificate issues"`
-
-		expireWarning time.Duration
+		Debug         bool          `flag:"debug" default:"false" description:"Output debugging data"`
+		ExpireWarning time.Duration `flag:"expire-warning" default:"744h" description:"When to warn about a soon expiring certificate"`
+		Probes        []string      `flag:"probe" default:"" description:"URLs to check for certificate issues"`
 	}{}
 	version       = "dev"
 	probeMonitors = map[string]*probeMonitor{}
@@ -41,12 +39,8 @@ func (r redirectFoundError) Error() string {
 }
 
 func init() {
-	var err error
-
-	rconfig.Parse(&config)
-	config.expireWarning, err = time.ParseDuration(config.ExpireWarning)
-	if err != nil {
-		log.Fatalf("You need to specify a valid expire-warning: %s", err)
+	if err := rconfig.Parse(&config); err != nil {
+		log.Fatalf("Unable to parse CLI parameters: %s", err)
 	}
 }
 
