@@ -1,6 +1,6 @@
 # Luzifer / PromCertcheck
 
-[![License: Apache v2.0](https://badge.luzifer.io/v1/badge?color=5d79b5&title=license&text=Apache+v2.0)](http://www.apache.org/licenses/LICENSE-2.0)
+![](https://badges.fyi/github/license/Luzifer/promcertcheck)
 
 This project contains a small monitoring tool to check URLs for their certificate validity. The URLs are polled once per hour and the certificates from that URLs are validated against the root certificates available to the program. (Provided by the operating systems distributor or manually set by you if you're using a docker container.)
 
@@ -26,6 +26,13 @@ Starting to listen on 0.0.0.0:3000
 
 ## URLs
 
-- `/` - Shows you a human readable version of the check data
-- `/metrics` - Prometheus compatible output of the check data
-- `/results.json` - Gives you a JSON version of the check results including certificate details
+| Endpoint | Description |
+| ---- | ---- |
+| `/` | Shows you a human readable version of the check data |
+| `/httpStatus` | Endpoint for simple automated health checks: Delivers `HTTP200` in case everything is fine or `HTTP500` when one or more certificates are broken |
+| `/metrics` | Prometheus compatible output of the check data |
+| `/results.json` | Gives you a JSON version of the check results including certificate details |
+
+----
+
+![](https://d2o84fseuhwkxk.cloudfront.net/promcertcheck.svg)
