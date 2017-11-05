@@ -14,10 +14,10 @@
   revision = "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
 
 [[projects]]
+  branch = "master"
   name = "github.com/flosch/pongo2"
   packages = ["."]
-  revision = "5e81b817a0c48c1c57cdf1a9056cf76bdee02ca9"
-  version = "v3.0"
+  revision = "1f4be1efe3b3529b7e58861f75d70120a9567dc4"
 
 [[projects]]
   branch = "master"
@@ -36,6 +36,12 @@
   packages = ["."]
   revision = "24fca303ac6da784b9e8269f724ddeb0b2eea5e7"
   version = "v1.5.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/juju/errors"
+  packages = ["."]
+  revision = "c7d06af17c68cd34c835053720b21f6549d9b0ee"
 
 [[projects]]
   name = "github.com/matttproud/golang_protobuf_extensions"
@@ -112,6 +118,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d0a90698569f49d4e7ef58586b857a1c7c60e48eaca07f1585d02e7ce91ca092"
+  inputs-digest = "f88f786b9ff5e99b5589aea171923fd8d9dcef123a4d6be68d7659b923e8dc1e"
   solver-name = "gps-cdcl"
   solver-version = 1
