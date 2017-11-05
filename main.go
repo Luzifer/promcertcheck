@@ -21,13 +21,13 @@ import (
 )
 
 var (
-	config = struct {
-		Debug         bool          `flag:"debug" default:"false" description:"Output debugging data"`
-		ExpireWarning time.Duration `flag:"expire-warning" default:"744h" description:"When to warn about a soon expiring certificate"`
-		RootsDir      string        `flag:"roots-dir" default:"" description:"Directory to load custom RootCA certs from to be trusted (*.pem)"`
-		LogLevel      string        `flag:"log-level" default:"info" description:"Verbosity of logs to use (debug, info, warning, error, ...)"`
-		Probes        []string      `flag:"probe" default:"" description:"URLs to check for certificate issues"`
-	}{}
+	cfg struct {
+		ExpireWarning  time.Duration `flag:"expire-warning" default:"744h" description:"When to warn about a soon expiring certificate"`
+		RootsDir       string        `flag:"roots-dir" default:"" description:"Directory to load custom RootCA certs from to be trusted (*.pem)"`
+		LogLevel       string        `flag:"log-level" default:"info" description:"Verbosity of logs to use (debug, info, warning, error, ...)"`
+		Probes         []string      `flag:"probe" default:"" description:"URLs to check for certificate issues"`
+		VersionAndExit bool          `flag:"version" default:"false" description:"Print program version and exit"`
+	}
 
 	version = "dev"
 
@@ -45,11 +45,16 @@ type probeMonitor struct {
 }
 
 func init() {
-	if err := rconfig.Parse(&config); err != nil {
+	if err := rconfig.Parse(&cfg); err != nil {
 		log.Fatalf("Unable to parse CLI parameters: %s", err)
 	}
 
-	if logLevel, err := log.ParseLevel(config.LogLevel); err == nil {
+	if cfg.VersionAndExit {
+		fmt.Printf("promcertcheck %s\n", version)
+		os.Exit(0)
+	}
+
+	if logLevel, err := log.ParseLevel(cfg.LogLevel); err == nil {
 		log.SetLevel(logLevel)
 	} else {
 		log.Fatalf("Unable to parse log level: %s", err)
@@ -91,12 +96,12 @@ func main() {
 }
 
 func loadAdditionalRootCAPool() error {
-	if config.RootsDir == "" {
+	if cfg.RootsDir == "" {
 		// Nothing specified, not loading anything but sys certs
 		return nil
 	}
 
-	return filepath.Walk(config.RootsDir, func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(cfg.RootsDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -122,7 +127,7 @@ func loadAdditionalRootCAPool() error {
 }
 
 func registerProbes() {
-	for _, probe := range config.Probes {
+	for _, probe := range cfg.Probes {
 		probeURL, _ := url.Parse(probe)
 
 		monitors := &probeMonitor{}
@@ -149,26 +154,25 @@ func registerProbes() {
 }
 
 func refreshCertificateStatus() {
-	for _, probe := range config.Probes {
+	for _, probe := range cfg.Probes {
 		probeURL, _ := url.Parse(probe)
 		verificationResult, verifyCert := checkCertificate(probeURL)
 
-		if config.Debug {
-			fmt.Printf("---\nProbe: %s\nResult: %s\n",
-				probeURL.Host,
-				verificationResult,
-			)
-			if verifyCert != nil {
-				fmt.Printf("Version: %d\nSerial: %d\nSubject: %s\nExpires: %s\nIssuer: %s\nAlt Names: %s\n",
-					verifyCert.Version,
-					verifyCert.SerialNumber,
-					verifyCert.Subject.CommonName,
-					verifyCert.NotAfter,
-					verifyCert.Issuer.CommonName,
-					strings.Join(verifyCert.DNSNames, ", "),
-				)
-			}
+		probeLog := log.WithFields(log.Fields{
+			"host":   probeURL.Host,
+			"result": verificationResult,
+		})
+		if verifyCert != nil {
+			probeLog = probeLog.WithFields(log.Fields{
+				"version":   verifyCert.Version,
+				"serial":    verifyCert.SerialNumber,
+				"subject":   verifyCert.Subject.CommonName,
+				"expires":   verifyCert.NotAfter,
+				"issuer":    verifyCert.Issuer.CommonName,
+				"alt_names": strings.Join(verifyCert.DNSNames, ", "),
+			})
 		}
+		probeLog.Debug("Probe finished")
 
 		if verifyCert != nil {
 			probeMonitors[probeURL.Host].Expires.Set(float64(verifyCert.NotAfter.UTC().Unix()))

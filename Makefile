@@ -10,7 +10,8 @@ test:
 		--probe="https://gobuilder.me/" \
 		--probe="https://pwd.luzifer.io/" \
 		--probe="https://www.itpad.de/" \
-		--probe="https://mondash.org/"
+		--probe="https://mondash.org/" \
+		--log-level debug
 
 container:
 	docker build -t luzifer/promcertcheck .

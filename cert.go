@@ -26,7 +26,7 @@ func (p probeResult) String() string {
 	case certificateOK:
 		return "Certificate OK"
 	case certificateExpiresSoon:
-		return fmt.Sprintf("Certificate expires within %s", config.ExpireWarning)
+		return fmt.Sprintf("Certificate expires within %s", cfg.ExpireWarning)
 	case certificateInvalid:
 		return "Certificate invalid / intermediate certificates not present"
 	case certificateNotFound:
@@ -91,7 +91,7 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 		return certificateInvalid, verifyCert
 	}
 
-	if verifyCert.NotAfter.Sub(time.Now()) < config.ExpireWarning {
+	if verifyCert.NotAfter.Sub(time.Now()) < cfg.ExpireWarning {
 		checkLogger.Debug("Certificate expires soon")
 		return certificateExpiresSoon, verifyCert
 	}
