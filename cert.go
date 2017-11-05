@@ -45,13 +45,13 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 	req.Header.Set("User-Agent", fmt.Sprintf("Mozilla/5.0 (compatible; PromCertcheck/%s; +https://github.com/Luzifer/promcertcheck)", version))
 
 	resp, err := http.DefaultClient.Do(req)
-	switch err.(type) {
-	case nil, redirectFoundError:
+	switch {
+	case err == nil:
+	case strings.Contains(err.Error(), redirectFoundError.Error()):
+		checkLogger.WithError(err).Warn("A redirect was found")
 	default:
 		checkLogger.WithError(err).Error("HTTP request failed")
-		if !strings.Contains(err.Error(), "Found a redirect.") {
-			return generalFailure, nil
-		}
+		return generalFailure, nil
 	}
 	resp.Body.Close()
 

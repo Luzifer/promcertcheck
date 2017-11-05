@@ -1,7 +1,9 @@
 package main // import "github.com/Luzifer/promcertcheck"
 
 import (
+	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -24,6 +26,8 @@ var (
 	}{}
 	version       = "dev"
 	probeMonitors = map[string]*probeMonitor{}
+
+	redirectFoundError = errors.New("Found a redirect")
 )
 
 type probeMonitor struct {
@@ -31,12 +35,6 @@ type probeMonitor struct {
 	Expires     prometheus.Gauge `json:"-"`
 	Status      probeResult
 	Certificate *x509.Certificate
-}
-
-type redirectFoundError struct{}
-
-func (r redirectFoundError) Error() string {
-	return "Found a redirect."
 }
 
 func init() {
@@ -53,7 +51,10 @@ func init() {
 
 func main() {
 	http.DefaultClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		return redirectFoundError{}
+		return redirectFoundError
+	}
+	http.DefaultClient.Transport = &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
 	registerProbes()
