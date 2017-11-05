@@ -1,6 +1,6 @@
 FROM golang:alpine
 
-MAINTAINER Knut Ahlers <knut@ahlers.me>
+LABEL maintainer "Knut Ahlers <knut@ahlers.me>"
 
 ADD . /go/src/github.com/Luzifer/promcertcheck
 WORKDIR /go/src/github.com/Luzifer/promcertcheck
