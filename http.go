@@ -4,10 +4,10 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/flosch/pongo2"
+	log "github.com/sirupsen/logrus"
 )
 
 func htmlHandler(res http.ResponseWriter, r *http.Request) {

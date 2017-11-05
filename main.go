@@ -3,7 +3,6 @@ package main // import "github.com/Luzifer/promcertcheck"
 import (
 	"crypto/x509"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -13,12 +12,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
 	config = struct {
 		Debug         bool          `flag:"debug" default:"false" description:"Output debugging data"`
 		ExpireWarning time.Duration `flag:"expire-warning" default:"744h" description:"When to warn about a soon expiring certificate"`
+		LogLevel      string        `flag:"log-level" default:"info" description:"Verbosity of logs to use (debug, info, warning, error, ...)"`
 		Probes        []string      `flag:"probe" default:"" description:"URLs to check for certificate issues"`
 	}{}
 	version       = "dev"
@@ -41,6 +42,12 @@ func (r redirectFoundError) Error() string {
 func init() {
 	if err := rconfig.Parse(&config); err != nil {
 		log.Fatalf("Unable to parse CLI parameters: %s", err)
+	}
+
+	if logLevel, err := log.ParseLevel(config.LogLevel); err == nil {
+		log.SetLevel(logLevel)
+	} else {
+		log.Fatalf("Unable to parse log level: %s", err)
 	}
 }
 

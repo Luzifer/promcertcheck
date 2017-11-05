@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type probeResult uint
@@ -37,6 +39,8 @@ func (p probeResult) String() string {
 }
 
 func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
+	checkLogger := log.WithFields(log.Fields{"probe_url": probeURL})
+
 	req, _ := http.NewRequest("HEAD", probeURL.String(), nil)
 	req.Header.Set("User-Agent", fmt.Sprintf("Mozilla/5.0 (compatible; PromCertcheck/%s; +https://github.com/Luzifer/promcertcheck)", version))
 
@@ -44,6 +48,7 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 	switch err.(type) {
 	case nil, redirectFoundError:
 	default:
+		checkLogger.WithError(err).Error("HTTP request failed")
 		if !strings.Contains(err.Error(), "Found a redirect.") {
 			return generalFailure, nil
 		}
@@ -67,6 +72,7 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 	}
 
 	if verifyCert == nil {
+		checkLogger.Debug("Certificate not found")
 		return certificateNotFound, nil
 	}
 
@@ -78,12 +84,15 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 	}
 
 	if !verificationResult {
+		checkLogger.Debug("Certificate invalid")
 		return certificateInvalid, verifyCert
 	}
 
 	if verifyCert.NotAfter.Sub(time.Now()) < config.ExpireWarning {
+		checkLogger.Debug("Certificate expires soon")
 		return certificateExpiresSoon, verifyCert
 	}
 
+	checkLogger.Debug("Certificate OK")
 	return certificateOK, verifyCert
 }
