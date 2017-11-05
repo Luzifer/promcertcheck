@@ -1,6 +1,9 @@
-# Luzifer / PromCertcheck
-
+[![Go Report Card](https://goreportcard.com/badge/github.com/Luzifer/promcertcheck)](https://goreportcard.com/report/github.com/Luzifer/promcertcheck)
 ![](https://badges.fyi/github/license/Luzifer/promcertcheck)
+![](https://badges.fyi/github/downloads/Luzifer/promcertcheck)
+![](https://badges.fyi/github/latest-release/Luzifer/promcertcheck)
+
+# Luzifer / PromCertcheck
 
 This project contains a small monitoring tool to check URLs for their certificate validity. The URLs are polled once per hour and the certificates from that URLs are validated against the root certificates available to the program. (Provided by the operating systems distributor or manually set by you if you're using a docker container.)
 
@@ -13,13 +16,15 @@ This project contains a small monitoring tool to check URLs for their certificat
 ## Usage
 
 ```bash
-# ./certcheck --help
-Usage of ./certcheck:
-      --debug[=false]: Output debugging data
-      --expire-warning="744h": When to warn about a soon expiring certificate
-      --probe=[]: URLs to check for certificate issues
+# ./promcertcheck --help
+Usage of ./promcertcheck:
+      --expire-warning duration   When to warn about a soon expiring certificate (default 744h0m0s)
+      --log-level string          Verbosity of logs to use (debug, info, warning, error, ...) (default "info")
+      --probe stringSlice         URLs to check for certificate issues
+      --roots-dir string          Directory to load custom RootCA certs from to be trusted (*.pem)
+      --version                   Print program version and exit
 
-# ./certcheck --probe=https://www.google.com/ --probe=https://www.facebook.com/
+# ./promcertcheck --probe=https://www.google.com/ --probe=https://www.facebook.com/
 PromCertcheck dev...
 Starting to listen on 0.0.0.0:3000
 ```
