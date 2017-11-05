@@ -55,8 +55,10 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 	}
 	resp.Body.Close()
 
-	intermediatePool := x509.NewCertPool()
-	var verifyCert *x509.Certificate
+	var (
+		intermediatePool = x509.NewCertPool()
+		verifyCert       *x509.Certificate
+	)
 
 	hostPort := strings.Split(probeURL.Host, ":")
 	host := hostPort[0]
@@ -79,6 +81,7 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 	verificationResult := false
 	if _, err := verifyCert.Verify(x509.VerifyOptions{
 		Intermediates: intermediatePool,
+		Roots:         rootPool,
 	}); err == nil {
 		verificationResult = true
 	}

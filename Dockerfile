@@ -12,5 +12,7 @@ RUN set -ex \
 
 EXPOSE 3000
 
+VOLUME ["/data/certs"]
+
 ENTRYPOINT ["/go/bin/promcertcheck"]
 CMD ["--probe=https://www.google.com/", "--probe=https://www.facebook.com/"]

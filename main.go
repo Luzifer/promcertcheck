@@ -5,8 +5,11 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -21,11 +24,15 @@ var (
 	config = struct {
 		Debug         bool          `flag:"debug" default:"false" description:"Output debugging data"`
 		ExpireWarning time.Duration `flag:"expire-warning" default:"744h" description:"When to warn about a soon expiring certificate"`
+		RootsDir      string        `flag:"roots-dir" default:"" description:"Directory to load custom RootCA certs from to be trusted (*.pem)"`
 		LogLevel      string        `flag:"log-level" default:"info" description:"Verbosity of logs to use (debug, info, warning, error, ...)"`
 		Probes        []string      `flag:"probe" default:"" description:"URLs to check for certificate issues"`
 	}{}
-	version       = "dev"
+
+	version = "dev"
+
 	probeMonitors = map[string]*probeMonitor{}
+	rootPool      *x509.CertPool
 
 	redirectFoundError = errors.New("Found a redirect")
 )
@@ -57,6 +64,15 @@ func main() {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
+	var err error
+	if rootPool, err = x509.SystemCertPool(); err != nil {
+		log.WithError(err).Fatal("Unable to load system RootCA pool")
+	}
+
+	if err = loadAdditionalRootCAPool(); err != nil {
+		log.WithError(err).Fatal("Could not load intermediate certificates")
+	}
+
 	registerProbes()
 	refreshCertificateStatus()
 
@@ -72,6 +88,37 @@ func main() {
 	r.HandleFunc("/httpStatus", httpStatusHandler)
 	r.HandleFunc("/results.json", jsonHandler)
 	http.ListenAndServe(":3000", r)
+}
+
+func loadAdditionalRootCAPool() error {
+	if config.RootsDir == "" {
+		// Nothing specified, not loading anything but sys certs
+		return nil
+	}
+
+	return filepath.Walk(config.RootsDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !strings.HasSuffix(path, ".pem") || info.IsDir() {
+			// Likely not a certificate, ignore
+			return nil
+		}
+
+		pem, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		if ok := rootPool.AppendCertsFromPEM(pem); !ok {
+			return fmt.Errorf("Failed to load certificate %q", path)
+		}
+
+		log.WithFields(log.Fields{"path": path}).Debug("Loaded RootCA certificate")
+
+		return nil
+	})
 }
 
 func registerProbes() {
