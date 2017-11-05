@@ -1,3 +1,10 @@
+# 0.5.0 / 2017-11-05
+
+  * Allow loading of custom RootCA certificates
+  * Add status logging for checks
+  * Improve handling of errors for invalid certs
+  * Switch to dep for dependency managment, update deps
+
 # 0.4.1 / 2017-06-26
 
   * Add automated building
