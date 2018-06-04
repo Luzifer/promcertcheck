@@ -41,7 +41,7 @@
                   {% else %}
                     <tr class="danger">
                   {% endif %}
-                    <td>{{ host }}</td>
+                    <td><abbr title="{{ res.Certificate.DNSNames | join:', ' }}">{{ host }}</abbr></td>
                     <td>{{ res.Certificate.Issuer.CommonName }}</td>
                     <td>{{ res.Certificate.NotAfter }}</td>
                     <td>{{ res.Status.String() }}</td>
