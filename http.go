@@ -11,7 +11,7 @@ import (
 )
 
 func htmlHandler(res http.ResponseWriter, r *http.Request) {
-	tplsrc, _ := Asset("display.html")
+	tplsrc := MustAsset("display.html")
 
 	template, err := pongo2.FromString(string(tplsrc))
 	if err != nil {

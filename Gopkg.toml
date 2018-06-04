@@ -26,6 +26,10 @@
 
 
 [[constraint]]
+  name = "github.com/Luzifer/go_helpers"
+  version = "2.5.0"
+
+[[constraint]]
   name = "github.com/Luzifer/rconfig"
   version = "1.2.0"
 

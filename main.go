@@ -1,4 +1,4 @@
-package main // import "github.com/Luzifer/promcertcheck"
+package main
 
 import (
 	"crypto/tls"
@@ -42,6 +42,27 @@ type probeMonitor struct {
 	Expires     prometheus.Gauge `json:"-"`
 	Status      probeResult
 	Certificate *x509.Certificate
+}
+
+func (p *probeMonitor) Update(status probeResult, cert *x509.Certificate) error {
+	p.Status = status
+	p.Certificate = cert
+
+	p.updatePrometheus(status, cert)
+
+	return nil
+}
+
+func (p probeMonitor) updatePrometheus(status probeResult, cert *x509.Certificate) {
+	if cert != nil {
+		p.Expires.Set(float64(cert.NotAfter.UTC().Unix()))
+	}
+
+	if status == certificateExpiresSoon || status == certificateOK {
+		p.IsValid.Set(1)
+	} else {
+		p.IsValid.Set(0)
+	}
 }
 
 func init() {
@@ -174,29 +195,9 @@ func refreshCertificateStatus() {
 		}
 		probeLog.Debug("Probe finished")
 
-		if verifyCert != nil {
-			probeMonitors[probeURL.Host].Expires.Set(float64(verifyCert.NotAfter.UTC().Unix()))
-		}
-
-		switch verificationResult {
-		case certificateExpiresSoon, certificateOK:
-			probeMonitors[probeURL.Host].IsValid.Set(1)
-		case certificateInvalid, certificateNotFound:
-			probeMonitors[probeURL.Host].IsValid.Set(0)
-		default:
-			probeMonitors[probeURL.Host].IsValid.Set(0)
-		}
-		probeMonitors[probeURL.Host].Status = verificationResult
-		probeMonitors[probeURL.Host].Certificate = verifyCert
-	}
-}
-
-func inSlice(slice []string, needle string) bool {
-	for _, i := range slice {
-		if i == needle {
-			return true
+		if err := probeMonitors[probeURL.Host].Update(verificationResult, verifyCert); err != nil {
+			probeLog.WithError(err).Error("Unable to update probe state")
+			return
 		}
 	}
-
-	return false
 }

@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Luzifer/go_helpers/str"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -31,11 +32,10 @@ func (p probeResult) String() string {
 		return "Certificate invalid / intermediate certificates not present"
 	case certificateNotFound:
 		return "Did not find a certificate valid for this domain"
-	case generalFailure:
+
+	default:
 		return "Something went wrong in the request"
 	}
-
-	return "" // This does not happen.
 }
 
 func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
@@ -65,7 +65,7 @@ func checkCertificate(probeURL *url.URL) (probeResult, *x509.Certificate) {
 
 	for _, cert := range resp.TLS.PeerCertificates {
 		wildHost := "*" + host[strings.Index(host, "."):]
-		if !inSlice(cert.DNSNames, host) && !inSlice(cert.DNSNames, wildHost) {
+		if !str.StringInSlice(host, cert.DNSNames) && !str.StringInSlice(wildHost, cert.DNSNames) {
 			intermediatePool.AddCert(cert)
 			continue
 		}

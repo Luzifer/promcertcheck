@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/Luzifer/go_helpers"
+  packages = ["str"]
+  revision = "94b91ff63a5db8e22c4d121e6c5c17b44135be4d"
+  version = "v2.5.0"
+
+[[projects]]
   name = "github.com/Luzifer/rconfig"
   packages = ["."]
   revision = "7aef1d393c1e2d0758901853b59981c7adc67c7e"
@@ -124,6 +130,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9e9921ed070369ec5c66299d9403b1d7dd184332dbf7f7e36c5d1ff493b88216"
+  inputs-digest = "e443e1ce42c6da5794decc9e50a89f0cda1f1e191c2c5582f2443c0342cb6e37"
   solver-name = "gps-cdcl"
   solver-version = 1
