@@ -1,3 +1,10 @@
+# 0.6.0 / 2018-06-04
+
+  * Improve date format
+  * Add alternate names as mouse-over
+  * Update vendored libs
+  * Fix copyright line in LICENSE
+
 # 0.5.0 / 2017-11-05
 
   * Allow loading of custom RootCA certificates
