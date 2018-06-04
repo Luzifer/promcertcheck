@@ -7,14 +7,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/Luzifer/rconfig"
-	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron"
 	log "github.com/sirupsen/logrus"
@@ -22,6 +20,7 @@ import (
 
 var (
 	cfg struct {
+		Listen         string        `flag:"listen" default:":3000" description:"Port/IP to listen on"`
 		ExpireWarning  time.Duration `flag:"expire-warning" default:"744h" description:"When to warn about a soon expiring certificate"`
 		RootsDir       string        `flag:"roots-dir" default:"" description:"Directory to load custom RootCA certs from to be trusted (*.pem)"`
 		LogLevel       string        `flag:"log-level" default:"info" description:"Verbosity of logs to use (debug, info, warning, error, ...)"`
@@ -31,39 +30,11 @@ var (
 
 	version = "dev"
 
-	probeMonitors = map[string]*probeMonitor{}
+	probeMonitors = map[string]*probe{}
 	rootPool      *x509.CertPool
 
 	redirectFoundError = errors.New("Found a redirect")
 )
-
-type probeMonitor struct {
-	IsValid     prometheus.Gauge `json:"-"`
-	Expires     prometheus.Gauge `json:"-"`
-	Status      probeResult
-	Certificate *x509.Certificate
-}
-
-func (p *probeMonitor) Update(status probeResult, cert *x509.Certificate) error {
-	p.Status = status
-	p.Certificate = cert
-
-	p.updatePrometheus(status, cert)
-
-	return nil
-}
-
-func (p probeMonitor) updatePrometheus(status probeResult, cert *x509.Certificate) {
-	if cert != nil {
-		p.Expires.Set(float64(cert.NotAfter.UTC().Unix()))
-	}
-
-	if status == certificateExpiresSoon || status == certificateOK {
-		p.IsValid.Set(1)
-	} else {
-		p.IsValid.Set(0)
-	}
-}
 
 func init() {
 	if err := rconfig.Parse(&cfg); err != nil {
@@ -83,6 +54,7 @@ func init() {
 }
 
 func main() {
+	// Configuration to receive redirects and TLS errors
 	http.DefaultClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 		return redirectFoundError
 	}
@@ -90,33 +62,35 @@ func main() {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
+	// Load valid CAs from system and specified folder
 	var err error
 	if rootPool, err = x509.SystemCertPool(); err != nil {
 		log.WithError(err).Fatal("Unable to load system RootCA pool")
 	}
 
-	if err = loadAdditionalRootCAPool(); err != nil {
+	if err = loadAdditionalRootCAPool(rootPool); err != nil {
 		log.WithError(err).Fatal("Could not load intermediate certificates")
 	}
 
 	registerProbes()
 	refreshCertificateStatus()
 
-	fmt.Printf("PromCertcheck %s...\nStarting to listen on 0.0.0.0:3000\n", version)
+	log.WithFields(log.Fields{
+		"version": version,
+	}).Info("PromCertcheck started to listen on 0.0.0.0:3000")
 
 	c := cron.New()
 	c.AddFunc("0 0 * * * *", refreshCertificateStatus)
 	c.Start()
 
-	r := mux.NewRouter()
-	r.Handle("/metrics", prometheus.Handler())
-	r.HandleFunc("/", htmlHandler)
-	r.HandleFunc("/httpStatus", httpStatusHandler)
-	r.HandleFunc("/results.json", jsonHandler)
-	http.ListenAndServe(":3000", r)
+	http.Handle("/metrics", prometheus.Handler())
+	http.HandleFunc("/", htmlHandler)
+	http.HandleFunc("/httpStatus", httpStatusHandler)
+	http.HandleFunc("/results.json", jsonHandler)
+	http.ListenAndServe(cfg.Listen, nil)
 }
 
-func loadAdditionalRootCAPool() error {
+func loadAdditionalRootCAPool(pool *x509.CertPool) error {
 	if cfg.RootsDir == "" {
 		// Nothing specified, not loading anything but sys certs
 		return nil
@@ -137,7 +111,7 @@ func loadAdditionalRootCAPool() error {
 			return err
 		}
 
-		if ok := rootPool.AppendCertsFromPEM(pem); !ok {
+		if ok := pool.AppendCertsFromPEM(pem); !ok {
 			return fmt.Errorf("Failed to load certificate %q", path)
 		}
 
@@ -148,56 +122,35 @@ func loadAdditionalRootCAPool() error {
 }
 
 func registerProbes() {
-	for _, probe := range cfg.Probes {
-		probeURL, _ := url.Parse(probe)
+	for _, probeURL := range cfg.Probes {
+		p, err := probeFromURL(probeURL)
+		if err != nil {
+			log.WithError(err).Error("Unable to create probe")
+			continue
+		}
 
-		monitors := &probeMonitor{}
-		monitors.Expires = prometheus.NewGauge(prometheus.GaugeOpts{
-			Name: "certcheck_expires",
-			Help: "Expiration date in unix timestamp (UTC)",
-			ConstLabels: prometheus.Labels{
-				"host": probeURL.Host,
-			},
-		})
-		monitors.IsValid = prometheus.NewGauge(prometheus.GaugeOpts{
-			Name: "certcheck_valid",
-			Help: "Validity of the certificate (0/1)",
-			ConstLabels: prometheus.Labels{
-				"host": probeURL.Host,
-			},
-		})
-
-		prometheus.MustRegister(monitors.Expires)
-		prometheus.MustRegister(monitors.IsValid)
-
-		probeMonitors[probeURL.Host] = monitors
+		probeMonitors[p.url.Host] = p
+		log.WithFields(log.Fields{
+			"host": p.url.Host,
+		}).Info("Probe registered")
 	}
 }
 
 func refreshCertificateStatus() {
-	for _, probe := range cfg.Probes {
-		probeURL, _ := url.Parse(probe)
-		verificationResult, verifyCert := checkCertificate(probeURL)
+	for _, p := range probeMonitors {
 
-		probeLog := log.WithFields(log.Fields{
-			"host":   probeURL.Host,
-			"result": verificationResult,
-		})
-		if verifyCert != nil {
-			probeLog = probeLog.WithFields(log.Fields{
-				"version":   verifyCert.Version,
-				"serial":    verifyCert.SerialNumber,
-				"subject":   verifyCert.Subject.CommonName,
-				"expires":   verifyCert.NotAfter,
-				"issuer":    verifyCert.Issuer.CommonName,
-				"alt_names": strings.Join(verifyCert.DNSNames, ", "),
+		go func(p *probe) {
+			logger := log.WithFields(log.Fields{
+				"host": p.url.Host,
 			})
-		}
-		probeLog.Debug("Probe finished")
 
-		if err := probeMonitors[probeURL.Host].Update(verificationResult, verifyCert); err != nil {
-			probeLog.WithError(err).Error("Unable to update probe state")
-			return
-		}
+			if err := p.refresh(); err != nil {
+				logger.WithError(err).Error("Unable to refresh probe status")
+				return
+			}
+
+			logger.Debug("Probe refreshed")
+		}(p)
+
 	}
 }
