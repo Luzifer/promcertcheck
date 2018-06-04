@@ -12,6 +12,7 @@ This project contains a small monitoring tool to check URLs for their certificat
 - Warns before the certificates expires
 - Gives a handy overview over all monitored URLs
 - Data is made available in Prometheus readable format for monitoring
+- Provide own root certificates to accept for chain validation
 
 ## Usage
 
@@ -19,8 +20,9 @@ This project contains a small monitoring tool to check URLs for their certificat
 # ./promcertcheck --help
 Usage of ./promcertcheck:
       --expire-warning duration   When to warn about a soon expiring certificate (default 744h0m0s)
+      --listen string             Port/IP to listen on (default ":3000")
       --log-level string          Verbosity of logs to use (debug, info, warning, error, ...) (default "info")
-      --probe stringSlice         URLs to check for certificate issues
+      --probe strings             URLs to check for certificate issues
       --roots-dir string          Directory to load custom RootCA certs from to be trusted (*.pem)
       --version                   Print program version and exit
 
