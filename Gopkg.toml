@@ -31,7 +31,7 @@
 
 [[constraint]]
   name = "github.com/Luzifer/rconfig"
-  version = "1.2.0"
+  version = "2.2.0"
 
 [[constraint]]
   name = "github.com/flosch/pongo2"
@@ -50,5 +50,6 @@
   version = "1.0.5"
 
 [prune]
+  non-go = true
   go-tests = true
   unused-packages = true

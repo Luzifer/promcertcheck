@@ -2,128 +2,179 @@
 
 
 [[projects]]
+  digest = "1:ac6e59cf5217c887f6872dc24ebcc3dbbbca6828d7f30b2f24008ec88b5839f3"
   name = "github.com/Luzifer/go_helpers"
   packages = ["str"]
-  revision = "94b91ff63a5db8e22c4d121e6c5c17b44135be4d"
-  version = "v2.5.0"
+  pruneopts = "NUT"
+  revision = "c3bea85c97943065c31d13b2193a9ef8c8488fb2"
+  version = "v2.8.0"
 
 [[projects]]
+  digest = "1:f6cc072a289a686fda22819d871cd1b0407640141b2f6616dfbab957c96bf6c3"
   name = "github.com/Luzifer/rconfig"
   packages = ["."]
-  revision = "7aef1d393c1e2d0758901853b59981c7adc67c7e"
-  version = "v1.2.0"
+  pruneopts = "NUT"
+  revision = "5b80190bff90ccb9899db31e45baac7b1bede03b"
+  version = "v2.2.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:707ebe952a8b3d00b343c01536c79c73771d100f63ec6babeaed5c79e2b8a8dd"
   name = "github.com/beorn7/perks"
   packages = ["quantile"]
+  pruneopts = "NUT"
   revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
 
 [[projects]]
   branch = "master"
+  digest = "1:237a3d25a7c82c4af199026ec273a4035f951c782414bbe1a63e508a46db0ef5"
   name = "github.com/flosch/pongo2"
   packages = ["."]
-  revision = "e7cf9ea5ca9c574f3fd5f83f7eed4a6162a67dea"
+  pruneopts = "NUT"
+  revision = "24195e6d38b06020d7a92c7b11960cf2e7cad2f2"
 
 [[projects]]
+  digest = "1:97df918963298c287643883209a2c3f642e6593379f97ab400c2a2e219ab647d"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
+  pruneopts = "NUT"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:bf0932b52b437415f41054bb880e44bc604b3f02b7a3bff360530f6def7f5c7d"
   name = "github.com/juju/errors"
   packages = ["."]
-  revision = "c7d06af17c68cd34c835053720b21f6549d9b0ee"
+  pruneopts = "NUT"
+  revision = "22422dad46e14561a0854ad42497a75af9b61909"
 
 [[projects]]
+  branch = "master"
+  digest = "1:c8a452cc8dd4ef9f857570ce2be31ca257a0928bf3c2b08cd7e11972b985c6d7"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "b729f2633dfe35f4d1d8a32385f6685610ce1cb5"
+
+[[projects]]
+  digest = "1:5985ef4caf91ece5d54817c11ea25f182697534f8ae6521eadcd628c142ac4b6"
   name = "github.com/matttproud/golang_protobuf_extensions"
   packages = ["pbutil"]
+  pruneopts = "NUT"
   revision = "c12348ce28de40eed0136aa2b644d0ee0650e56c"
   version = "v1.0.1"
 
 [[projects]]
+  digest = "1:3e5fd795ebf6a9e13e67d644da76130af7a6003286531f9573f8074c228b66a3"
   name = "github.com/prometheus/client_golang"
   packages = ["prometheus"]
+  pruneopts = "NUT"
   revision = "c5b7fccd204277076155f10851dad72b76a49317"
   version = "v0.8.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:2d5cd61daa5565187e1d96bae64dbbc6080dacf741448e9629c64fd93203b0d4"
   name = "github.com/prometheus/client_model"
   packages = ["go"]
-  revision = "99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c"
+  pruneopts = "NUT"
+  revision = "5c3871d89910bfb32f5fcab2aa4b9ec68e65a99f"
 
 [[projects]]
   branch = "master"
+  digest = "1:fad5a35eea6a1a33d6c8f949fbc146f24275ca809ece854248187683f52cc30b"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
     "internal/bitbucket.org/ww/goautoneg",
-    "model"
+    "model",
   ]
-  revision = "7600349dcfe1abd18d72d3a1770870d9800a7801"
+  pruneopts = "NUT"
+  revision = "c7de2306084e37d54b8be01f3541a8464345e9a5"
 
 [[projects]]
   branch = "master"
+  digest = "1:26a2f5e891cc4d2321f18a0caa84c8e788663c17bed6a487f3cbe2c4295292d0"
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
     "internal/util",
     "nfs",
-    "xfs"
+    "xfs",
   ]
-  revision = "94663424ae5ae9856b40a9f170762b4197024661"
+  pruneopts = "NUT"
+  revision = "418d78d0b9a7b7de3a6bbc8a23def624cc977bb2"
 
 [[projects]]
+  digest = "1:53c3320ee307f01fd24a88e396a8d2239cd8346d1a085320209319f2d33f59cc"
   name = "github.com/robfig/cron"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "b41be1df696709bb6395fe435af20370037c0b4c"
   version = "v1.1"
 
 [[projects]]
+  digest = "1:01252cd79aac70f16cac02a72a1067dd136e0ad6d5b597d0129cf74c739fd8d1"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
-  version = "v1.0.5"
+  pruneopts = "NUT"
+  revision = "a67f783a3814b8729bd2dac5780b5f78f8dbd64d"
+  version = "v1.1.0"
 
 [[projects]]
+  digest = "1:e3707aeaccd2adc89eba6c062fec72116fe1fc1ba71097da85b4d8ae1668a675"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
-  version = "v1.0.1"
+  pruneopts = "NUT"
+  revision = "9a97c102cda95a86cec2345a6f09f55a939babf5"
+  version = "v1.0.2"
 
 [[projects]]
   branch = "master"
+  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "df8d4716b3472e4a531c33cedbe537dae921a1a9"
+  pruneopts = "NUT"
+  revision = "5295e8364332db77d75fce11f1d19c053919a9c9"
 
 [[projects]]
   branch = "master"
+  digest = "1:4ea08b5c4c51887a54caee2954db97b620736ae510bdc8514f691d3a9375d93a"
   name = "golang.org/x/sys"
   packages = [
     "unix",
-    "windows"
+    "windows",
   ]
-  revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
+  pruneopts = "NUT"
+  revision = "e4b3c5e9061176387e7cea65e4dc5853801f3fb7"
 
 [[projects]]
   branch = "v2"
+  digest = "1:1ab6db2d2bd353449c5d1e976ba7a92a0ece6e83aaab3e6674f8f2f1faebb85a"
   name = "gopkg.in/validator.v2"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "135c24b11c19e52befcae2ec3fca5d9b78c4e98e"
 
 [[projects]]
+  digest = "1:7c95b35057a0ff2e19f707173cc1a947fa43a6eb5c4d300d196ece0334046082"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
   version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7219340891e29105af1c44377ba63a2c742e75ae42d2453c879d334541234b0d"
+  input-imports = [
+    "github.com/Luzifer/go_helpers/str",
+    "github.com/Luzifer/rconfig",
+    "github.com/flosch/pongo2",
+    "github.com/prometheus/client_golang/prometheus",
+    "github.com/robfig/cron",
+    "github.com/sirupsen/logrus",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
