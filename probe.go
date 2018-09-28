@@ -14,9 +14,9 @@ type probe struct {
 	Status      probeResult
 	Certificate *x509.Certificate
 
-	isValid prometheus.Gauge `json:"-"`
-	expires prometheus.Gauge `json:"-"`
-	url     *url.URL         `json:"-"`
+	isValid prometheus.Gauge
+	expires prometheus.Gauge
+	url     *url.URL
 }
 
 func probeFromURL(u string) (*probe, error) {
