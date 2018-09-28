@@ -1,3 +1,7 @@
+# 0.7.2 / 2018-09-28
+
+  * Lint: Make go vet happy, remove useless tags
+
 # 0.7.1 / 2018-09-28
 
   * Update Dockerfile to multi-stage build
