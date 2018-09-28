@@ -37,7 +37,8 @@ var (
 )
 
 func init() {
-	if err := rconfig.Parse(&cfg); err != nil {
+	rconfig.AutoEnv(true)
+	if err := rconfig.ParseAndValidate(&cfg); err != nil {
 		log.Fatalf("Unable to parse CLI parameters: %s", err)
 	}
 
