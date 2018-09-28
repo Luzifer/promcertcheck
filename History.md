@@ -1,3 +1,8 @@
+# 0.7.0 / 2018-09-28
+
+  * Update dependencies
+  * Support configuration through ENV vars
+
 # 0.6.0 / 2018-06-04
 
   * Improve date format
