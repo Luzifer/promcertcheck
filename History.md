@@ -1,3 +1,8 @@
+# 0.8.0 / 2018-10-01
+
+  * Only display cert info when a cert was found
+  * Add error logging for http rendering errors
+
 # 0.7.2 / 2018-09-28
 
   * Lint: Make go vet happy, remove useless tags
