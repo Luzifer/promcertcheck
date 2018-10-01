@@ -18,12 +18,14 @@ func htmlHandler(res http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	template.ExecuteWriter(pongo2.Context{
+	if err := template.ExecuteWriter(pongo2.Context{
 		"results":                probeMonitors,
 		"certificateOK":          certificateOK,
 		"certificateExpiresSoon": certificateExpiresSoon,
 		"version":                version,
-	}, res)
+	}, res); err != nil {
+		log.WithError(err).Error("Unable to render display template")
+	}
 }
 
 func httpStatusHandler(res http.ResponseWriter, r *http.Request) {
