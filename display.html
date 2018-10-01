@@ -41,9 +41,15 @@
                   {% else %}
                     <tr class="danger">
                   {% endif %}
-                    <td><abbr title="{{ res.Certificate.DNSNames | join:', ' }}">{{ host }}</abbr></td>
-                    <td>{{ res.Certificate.Issuer.CommonName }}</td>
-                    <td>{{ res.Certificate.NotAfter | time:"2006-01-02 15:04:05 MST" }}</td>
+                    <td>
+                      {% if res.Certificate %}
+                      <abbr title="{{ res.Certificate.DNSNames | join:', ' }}">{{ host }}</abbr>
+                      {% else %}
+                      {{ host }}
+                      {% endif %}
+                    </td>
+                    <td>{% if res.Certificate %}{{ res.Certificate.Issuer.CommonName }}{% endif %}</td>
+                    <td>{% if res.Certificate %}{{ res.Certificate.NotAfter | time:"2006-01-02 15:04:05 MST" }}{% endif %}</td>
                     <td>{{ res.Status.String() }}</td>
                   </tr>
                 {% endfor %}
