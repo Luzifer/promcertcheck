@@ -1,3 +1,9 @@
+# 0.9.0 / 2021-02-19
+
+  * Update Dockerfile for readonly mods
+  * Add go modules support
+  * Remove old vendoring
+
 # 0.8.0 / 2018-10-01
 
   * Only display cert info when a cert was found
