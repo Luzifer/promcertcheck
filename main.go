@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Luzifer/rconfig"
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/Luzifer/rconfig/v2"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/robfig/cron"
 	log "github.com/sirupsen/logrus"
 )
@@ -84,7 +84,7 @@ func main() {
 	c.AddFunc("0 0 * * * *", refreshCertificateStatus)
 	c.Start()
 
-	http.Handle("/metrics", prometheus.Handler())
+	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/", htmlHandler)
 	http.HandleFunc("/httpStatus", httpStatusHandler)
 	http.HandleFunc("/results.json", jsonHandler)
@@ -139,7 +139,6 @@ func registerProbes() {
 
 func refreshCertificateStatus() {
 	for _, p := range probeMonitors {
-
 		go func(p *probe) {
 			logger := log.WithFields(log.Fields{
 				"host": p.url.Host,
@@ -152,6 +151,5 @@ func refreshCertificateStatus() {
 
 			logger.Debug("Probe refreshed")
 		}(p)
-
 	}
 }
